@@ -40,3 +40,4 @@ for i in range(10):
         table.append(data)
 df = pd.json_normalize(table)
 df.to_csv("cakefrontendjobs.csv", encoding="utf-8")
+df
