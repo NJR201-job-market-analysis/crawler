@@ -1,0 +1,53 @@
+
+%%  使用vs code擴充套件 <mermaid>
+%%  mermaid 官方文件
+%%  https://mermaid.js.org/config/theming.html#theme-variables
+
+%%{init: {'theme':'forest'}}%%
+
+gantt
+    title (時程規劃-專題製作)
+    dateFormat  YYYY-MM-DD
+ 
+    % 註解：此為假設性調整，需依實際情況修改
+
+    section 專題分組
+    分組                      :done, 2025-05-02, 2025-05-10 
+    團隊github申請               :done, 2025-05-13, 1d
+
+    section 專題規劃與初步報告
+    專題計畫-投影片製作        :active, 2025-05-10, 2025-05-24 
+
+    主題架構報告 (進度與計畫)  :crit, 2025-05-24, 1d
+
+    section 網站資料收集
+    網站爬蟲               :active,2025-05-13, 2025-05-30
+    Github彙整               :crit, 2025-05-25, 6d   
+    資料清理                 :crit, 2025-05-30, 7d
+
+    section 資料處理與儲存
+    資料庫Schema設計          :2025-05-17, 2025-05-20 % 
+    資料驗證與修正            :after 資料儲存至MySQL 2025-05-22, 14d
+    資料庫儲存                :crit, after 完整資料ETL與清理 2025-06-04, 7d
+
+    section API功能開發
+    API需求分析與設計         :2025-06-05, 7d % 
+    API開發與單元測試         :crit, after 資料儲存至MySQL 2025-06-07, 13d
+    雲端整合測試              :crit, 2025-06-17, 2025-07-24
+
+    section 雲端核心技術
+    Docker容器               :2025-06-17, 2025-07-05
+    Airflow                 :2025-07-05, 2025-07-12
+    GCP部署                  :2025-07-12, 2025-07-24
+    
+
+    section 視覺化呈現
+    視覺化需求與設計          :2025-06-14, 20d % 
+    視覺化圖表開發            :crit, after 資料儲存至MySQL 2025-06-20, 36d
+    視覺化整合與測試          :after 視覺化圖表開發 2025-07-10, 23d
+
+    section 整合測試與最終報告準備
+    最終成果討論              :2025-07-22, 10d %
+    最終報告投影片製作         :2025-07-25, 10d 
+    專案緩衝期                :2025-08-02, 10d
+    最後截止日                :crit, 2025-08-17, 1d 

@@ -1,0 +1,41 @@
+
+%%  使用vs code擴充套件 <mermaid>
+%%  mermaid 官方文件
+%%  https://mermaid.js.org/config/theming.html#theme-variables
+
+%%{init: {'theme':'forest'}}%%
+
+gantt
+    title (專題製作-網站爬蟲)
+    dateFormat  YYYY-MM-DD
+ 
+    % 註解：此為假設性調整，需依實際情況修改
+
+    section 專題分組
+    分組                      :done, 2025-05-02, 2025-05-10 
+    團隊github申請               :done, 2025-05-13, 1d
+
+    section 專題規劃與初步報告
+    專題計畫-投影片製作        :done, 2025-05-10, 2025-05-24 
+    專題討論-第一次           :done, milestone, 2025-05-13, 1d
+    專題討論-第二次           :done, milestone, 2025-05-22, 1d
+    
+    專題計畫-投影片驗收        :done,2025-05-22, 2025-05-24 
+    主題架構報告 (進度與計畫)  :done, 2025-05-24, 1d
+
+    section 網站資料收集
+    cake(詩雲)               :done,2025-05-13, 2025-05-19 
+    yourator(詩雲)           :done,2025-05-19, 2025-05-23
+    Linkedin(詩雲)           :active,2025-05-19, 2025-05-31
+    104(湘筠)                :done, milestone, 2025-05-13, 2025-05-19
+    104(士繽)                :done,2025-05-19, 2025-05-25
+    1111(育宸)               :active,2025-05-13, 2025-05-31 
+    yes123(珮雯)             :active,2025-05-13, 2025-05-31
+    Github彙整               :after, 2025-05-24, 2025-06-05   
+    
+    section 資料處理與儲存
+    專題討論-第三次           : milestone, 2025-06-03, 1d
+    資料庫Schema設計          :2025-06-03 % 
+    資料清理                 :after 資料儲存至MySQL 2025-06-03, 7d
+    資料驗證與修正            :crit, 2025-06-03, 7d
+    資料庫儲存                :crit, after 完整資料ETL與清理 2025-06-03, 14d
