@@ -14,14 +14,18 @@ ex=False       #預設不限定工作經驗. 只想找工作經驗"不拘"的, �
 main.find_all_pages(looking_for,p_start,p_limit,w_place,wfh,ex)
 df = main.pd.json_normalize(main.table)
 
-#(三)用class創資料夾並存檔案
+#(三)應當會回傳以下資訊 
+#"公司名稱", "工作內容(職缺描述)", "電腦專長", "工作地點", "工作經驗", 
+#"遠距工作", "其他說明(是否需出差)", "更新日期"
+
+#(四)用class創資料夾並存檔案
 f1=main.File(name="1111jobs.csv") # name="檔名"
 f1.path("大肥貓咪資料夾")          # 創建資料夾名稱, 同時自動設好從資料夾到檔案的路徑(路徑名稱: f1.path_name)
 df.to_csv(f1.path_name, encoding="utf-8")
 
 #一步一步創資料夾存檔案
-# dn="肥貓大資料夾" #創資料夾名稱
-# fn="肥貓job4" #創檔名
+# dn="肥貓大資料夾"    #創資料夾名稱
+# fn="肥貓job4"       #創檔名
 # if not main.os.path.exists(dn):
 #     main.os.makedirs(dn)
 # fn=dn+"/"+fn+".csv"
