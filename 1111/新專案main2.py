@@ -1,22 +1,21 @@
 import 新專題main as main
 
-#(一)查找資料條件, 已經有預設值, 請依需求自行修改
-
-looking_for="desc&ks="+main.urllib.parse.quote("軟體+工程師") #查找中文關鍵字, 中間用+連接
-#looking_for="software+python" #查找英文關鍵字, 中間用+連接 ex."software+engineer"
-p_start=1      #從第幾頁開始找
-p_limit=2      #找到第幾頁
-w_place=[]     #預設不限縣市, 想找特定縣市請輸入縣市名稱, (一縣市以兩字為限), 並以逗號相隔 ex.["台北","桃園"]
-wfh=False      #預設不限定遠端工作. 只想找遠端工作, 改成True
-ex=False       #預設不限定工作經驗. 只想找工作經驗"不拘"的, 改成True
-
-#(二)查找資料入口
-main.find_all_pages(looking_for,p_start,p_limit,w_place,wfh,ex)
-df = main.pd.json_normalize(main.table)
-
-#(三)應當會回傳以下資訊 
+#(一)查找資料條件, 我們希望獲得以下資訊(職缺): 
 #"公司名稱", "工作內容(職缺描述)", "電腦專長", "工作地點", "工作經驗", 
 #"遠距工作", "其他說明(是否需出差)", "更新日期"
+
+#(二)預設篩選條件, 請依需求自行修改
+looking_for="desc&ks="+main.urllib.parse.quote("軟體+工程師") #查找中文關鍵字, 中間用+連接
+#looking_for="software+python"         #查找英文關鍵字, 中間用+連接 ex."software+engineer"
+p_start=1      #從第幾頁開始找
+p_limit=2      #找到第幾頁
+w_place=[]     #預設不限地點, 想找特定縣市請輸入縣市名稱, (一縣市以兩字為限), 並以逗號相隔 ex.["台北","桃園"]
+wfh=False      #預設不限定工作模式. 只想找遠端工作, 改成True
+ex=False       #預設不限定工作經驗. 只想找工作經驗"不拘"的, 改成True
+
+#(三)查找資料入口
+main.find_all_pages(looking_for,p_start,p_limit,w_place,wfh,ex)
+df = main.pd.json_normalize(main.table)
 
 #(四)用class創資料夾並存檔案
 f1=main.File(name="1111jobs.csv") # name="檔名"
