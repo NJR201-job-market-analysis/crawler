@@ -1,6 +1,6 @@
 # crawler
 
-本專案為多網站職缺爬蟲程式集合，包含 Cake.me 與 Yourator 等平台的職缺資料擷取。
+本專案為多網站職缺爬蟲程式集合，支援 Cake.me、Yourator 及 LinkedIn 等平台的職缺資料擷取與分析。
 
 ## 專案結構
 
@@ -13,25 +13,25 @@
   - `yourator_crawler.py`：Yourator 職缺爬蟲主程式  
   - `main.py`：Yourator 爬蟲執行入口
 
+- `linkedin/`
+  - `Linkedin_crawl_20250527.ipynb`：LinkedIn 職缺爬蟲與資料分析 Notebook
 
 ## 使用方式
 
-1. 進入對應資料夾（如 `cake/` 或 `yourator/`）。
-2. 執行 `main.py` 以開始爬取職缺資料，結果將輸出為 CSV 檔案。
-3. 亦可參考 `cake_me_crawl_20250523.ipynb` 進行進階資料分析。
+1. 進入對應資料夾（如 `cake/`、`yourator/` 或 `linkedin/`）。
+2. 執行 `main.py` 或 Notebook 以開始爬取職缺資料，結果將輸出為 CSV 檔案。
+3. 亦可參考 Notebook 進行進階資料分析。
 
 ## 依賴套件
 
 - requests
 - beautifulsoup4
 - pandas
-- tqdm（僅 Notebook 需要）
+- tqdm（主要用於 Notebook）
+- selenium（LinkedIn 爬蟲需要）
 
 請先安裝相關 Python 套件。
 
 ## 版權
 
-僅供學術與技術交流使用，請勿用於商業用途。# crawler
-上傳爬蟲程式碼
-
-## 測試：這是次標題
+僅供學術與技術交流使用，請勿用於商業用途。
