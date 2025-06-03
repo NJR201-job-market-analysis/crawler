@@ -7,7 +7,7 @@ import ssl
 import os
 # 直接爬會跳出ssl認證沒過, ssl這行是google來的指令 貼上去後才可以爬取
 ssl._create_default_https_context = ssl._create_unverified_context
-url="https://www.1111.com.tw/job/130421111"
+url=""
 def analaze_pages(url):
     r=req.Request(url, headers={
     "user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36"
@@ -32,22 +32,18 @@ def analaze_pages(url):
     work_place=html.find("p",{"class":"mb-4"}) #第一種路徑
     if work_place==None: #如果第一種路徑抓不到
         work_place=html.find("div",{"class":"md:items-center content"}).p.text #就它了
-        work_place_location=[]  #設立空列表
-        aa=list(work_place)
-        for a in aa:
-            if a==" " or a=="\n":
-                continue   #不寫入空格" "和換行符號"\n" 遇到就回前面, 不執行append(a)
-            work_place_location.append(a)
-        work_place_location="".join(work_place_location)
+        work_place_location=""
+        for w in work_place:
+            if w==" " or w=="\n":
+                continue
+        else:
+            work_place_location=work_place_location+w
     else:
-        ss=list(work_place.text)
-        work_place_location=[]
-        for s in ss:
+        work_place_location=""
+        for s in work_place.text:
             if s==" " or s=="\n":
                 continue   #不寫入空格" "和換行符號"\n" 遇到就回前面, 不執行append(a)
-            work_place_location.append(s)
-        work_place_location="".join(work_place_location)
-    #最後再將list轉回字串
+            work_place_location=work_place_location+s
 
     #遠端 有的公司直接缺少該欄位 用class會撈到別的東西 所以查找關鍵字"遠端上班"的"遠"
     # (不用"端"是因為會撈出前端後端)(應該有更好的解法, 待我再研究XD)
