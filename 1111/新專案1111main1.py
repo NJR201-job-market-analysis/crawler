@@ -107,7 +107,8 @@ def analaze_pages(url):
         if job_ex.h3!=None:
             if job_ex.h3.text=="工作經驗":
                 job_exs=job_ex.p.text
-
+    #工作地點
+    work_place_city=work_place_location.split()[0]
     #更新時間
     updata_time=html.find("span",{"class":"leading-[1.8] text-[16px]"}).text    
 
@@ -120,7 +121,8 @@ def analaze_pages(url):
         "薪資上下限":job_salary,
         "上班時段":work_time,
         "工作性質":work_type,
-        "工作地點":work_place_location,
+        "工作地點":work_place_city,
+        "工作地址":work_place_location,
         "加分技能":qualification_bonus+"/  "+qualification_bonus1,
         "工作經驗":job_exs,
         "程式語言":skill_list,
