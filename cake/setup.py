@@ -14,7 +14,7 @@ setup(
     description="test",  # Optional
     long_description=long_description,  # Optional
     long_description_content_type="text/markdown",  # Optional (see note above)
-    author="iyauta",  # Optional
+    author="falloutnicole",  # Optional
     author_email="falloutnicole@gmail.com",  # Optional
     classifiers=[  # Optional
         "Development Status :: 3 - Alpha",
