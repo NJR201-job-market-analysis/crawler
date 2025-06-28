@@ -1,0 +1,21 @@
+創建虛擬環境
+pipenv --python ~/.pyenv/versions/3.8.10/bin/python
+
+簡潔格式查看正在執行中的容器
+docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+
+如何測試 celery 是否正常運行
+
+1. 激活環境
+pipenv shell
+
+2. 啟動 worker
+
+如果已經在虛擬環境 (在本地開發要這樣使用)
+celery -A cake.cake_worker worker --loglevel=info
+
+如果不在虛擬環境 (在 docker 中要這樣使用)
+pipenv run celery -A cake.cake_worker worker --loglevel=info
+
+3. 測試發送任務
+python cake_producer.py
