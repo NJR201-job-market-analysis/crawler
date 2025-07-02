@@ -10,8 +10,6 @@ if env_file.exists():
 else:
     print(f"⚠️ .env 文件不存在: {env_file}")
 
-print(os.environ.get("RABBITMQ_HOST"))
-
 WORKER_ACCOUNT = os.environ.get("WORKER_ACCOUNT", "worker")
 WORKER_PASSWORD = os.environ.get("WORKER_PASSWORD", "worker")
 
@@ -22,4 +20,4 @@ RABBITMQ_PORT = int(os.environ.get("RABBITMQ_PORT", 5672))
 MYSQL_HOST = os.environ.get("MYSQL_HOST", "mysql")
 MYSQL_PORT = int(os.environ.get("MYSQL_PORT", 3306))
 MYSQL_ACCOUNT = os.environ.get("MYSQL_ACCOUNT", "root")
-MYSQL_PASSWORD = os.environ.get("MYSQL_PASSWORD", "mydb")
+MYSQL_PASSWORD = os.environ.get("MYSQL_PASSWORD", "test")

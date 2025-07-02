@@ -9,6 +9,9 @@ celery = "==5.5.0"
 pandas = "*"
 requests = "*"
 python-dotenv = "*"
+bs4 = "*"
+sqlalchemy = "==1.4.54"
+pymysql = "==1.1.1"
 
 # 添加本地 cake 包
 cake = {path = ".", editable = true}

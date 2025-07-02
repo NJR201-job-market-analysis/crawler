@@ -25,7 +25,7 @@ COMMON_SKILLS = [
     # 資料庫
     "SQL", "MySQL", "PostgreSQL", "MSSQL", "Oracle", "MongoDB", "Redis", "ElasticSearch", "SQLite",
     # 前端
-    "HTML5", "CSS3", "HTML", "CSS", "Sass", "Less", "React", "ReactJs", "Redux", "Nextjs", "NextJs", "Vue", "Vue.js", "Angular",
+    "HTML5", "CSS3", "HTML", "CSS", "Sass", "Less", "React", "React Native", "React.js" "ReactJs", "Redux", "Nextjs", "NextJs", "Vue", "Vue.js", "Angular",
     # DevOps/雲端
     "Shell Script", "Bash", "Linux", "Unix",
     "AWS", "GCP", "Azure", "Google Cloud", "Amazon Web Services", "Microsoft Azure",

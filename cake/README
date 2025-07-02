@@ -1,5 +1,7 @@
 # Cake 爬蟲系統
 
+程式碼位於 https://github.com/NJR201-job-market-analysis/crawler/cake
+
 一個基於 Celery 和 RabbitMQ 的分布式爬蟲系統，用於爬取 Cake 平台的職缺資訊。
 
 ## 📁 目錄結構
@@ -155,3 +157,12 @@ crawl_cake_jobs.delay(
    ```bash
    pipenv run python -m crawler.cake_producer
    ```
+
+
+資料表規劃
+
+company
+locations
+job_type
+job_posts
+job_skills
