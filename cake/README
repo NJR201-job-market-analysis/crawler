@@ -39,19 +39,27 @@ ENV=DOCKER|DEV pipenv run python genenv.py
 pipenv install
 
 # 構建 Docker 映像檔
-DOCKER_IMAGE_VERSION=0.0.0 docker build -f Dockerfile -t xxx/cake-crawler
+docker build -f Dockerfile -t xxx/cake-crawler:0.0.0 .
 
 # 推送到 Docker Hub
-docker push xxx/cake-crawler
+docker push xxx/cake-crawler:0.0.0
 
 # 啟動 RabbitMQ、MySQL、Flower、PhpMyAdmin 容器
 docker compose -f docker-compose.monitor.yml up -d
 
 # 啟動 Cake 爬蟲 Worker
-docker compose -f docker-compose.app.yml up -d cake_worker_1
+DOCKER_IMAGE_VERSION=0.0.0 docker compose -f docker-compose.app.yml up -d cake_worker_1
 
-# 啟動 Cake 任務生產者
-docker compose -f docker-compose.app.yml up -d cake_producer
+# 查看 Worker 日誌，確定正常啟動
+docker logs cake_worker_1
+
+# 啟動 Cake 任務生產者，確定有執行發送任務
+DOCKER_IMAGE_VERSION=0.0.0 docker compose -f docker-compose.app.yml up -d cake_producer
+
+# 查看任務發送狀況
+docker logs cake_producer
+
+# 如果都正常執行，等 Worker 跑完可訪問 localhost:8080 查看資料是否寫入
 ```
 
 ### 2. 關閉 Docker 服務
@@ -107,5 +115,5 @@ crawl_cake_jobs.delay(
 - **`genenv.py`**: 根據環境生成 `.env` 文件
 - **`cake_worker.py`**: Celery 應用配置，連接 RabbitMQ
 - **`cake_tasks.py`**: 定義爬蟲任務和測試任務
-- **`cake_producer.py`**: 任務生產者，發送爬蟲任務
+- **`cake_producer.py`**: 任務生產者，發送爬蟲任務、將資料寫入DB
 - **`cake_crawler.py`**: 核心爬蟲邏輯，解析 Cake 網站
