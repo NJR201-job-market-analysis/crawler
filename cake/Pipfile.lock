@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "6b30fd4d0e816cf9c3b315b24e5c1e36c466025e2f58adf957a6643a8c7c14da"
+            "sha256": "a9b19f31f1e55ce583994852347c811f833a48bb9c80c3d1bbcfda7257123bff"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -80,10 +80,6 @@
             ],
             "index": "pypi",
             "version": "==0.0.2"
-        },
-        "cake": {
-            "editable": true,
-            "path": "."
         },
         "celery": {
             "hashes": [

@@ -21,7 +21,8 @@ tasks = []
 # 為每個分類創建一個任務
 for category, job_type in categories:
 
-    task = crawl_cake_jobs.delay(category=category, job_type=job_type)
+    task = crawl_cake_jobs.s(category=category, job_type=job_type)
+    task.apply_async(queue="cake_crawler")
 
     tasks.append(task)
     logger.info("📤 已發送任務: %s | %s | ID: %s", category, job_type, task.id)

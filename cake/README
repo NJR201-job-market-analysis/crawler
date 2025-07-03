@@ -30,44 +30,64 @@
 
 ```bash
 # 進入項目目錄
-cd /root/job-crawler/cake
+cd /job-crawler/cake
 
 # 生成環境變數文件
-ENV=DOCKER|DEV python genenv.py
-
-# 驗證配置
-pipenv run python -c "from crawler.cake_config import RABBITMQ_HOST; print(f'RABBITMQ_HOST: {RABBITMQ_HOST}')"
+ENV=DOCKER|DEV pipenv run python genenv.py
 
 # 安裝依賴
 pipenv install
+
+# 構建 Docker 映像檔
+DOCKER_IMAGE_VERSION=0.0.0 docker build -f Dockerfile -t xxx/cake-crawler
+
+# 推送到 Docker Hub
+docker push xxx/cake-crawler
+
+# 啟動 RabbitMQ、MySQL、Flower、PhpMyAdmin 容器
+docker compose -f docker-compose.monitor.yml up -d
+
+# 啟動 Cake 爬蟲 Worker
+docker compose -f docker-compose.app.yml up -d cake_worker_1
+
+# 啟動 Cake 任務生產者
+docker compose -f docker-compose.app.yml up -d cake_producer
 ```
 
-### 2. 啟動 RabbitMQ、MySQL、Flower、PhpMyAdmin
+### 2. 關閉 Docker 服務
 
 ```bash
-# 使用 Docker 啟動
-docker compose -f docker-compose.monitor.yml up -d
-docker compose -f docker-compose.monitor.yml down -d
+# 使用 Docker compose
+docker compose -f docker-compose.monitor.yml down
+docker compose -f docker-compose.app.yml down
 
 # 查看容器狀態
 docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 ```
 
-### 3: 啟動 Worker、Producer
+### 3: 在終端機啟動 Worker、Producer
 
 ```bash
 # 終端 1: 啟動 Worker
 pipenv run celery -A crawler.cake_worker worker --loglevel=info
 
+# 查看 Worker 狀態
+pipenv run celery -A crawler.cake_worker status
+ps aux | grep celery
+
 # 終端 3: 執行 Producer
-pipenv run python -m crawler.cake_producer
+pipenv run python crawler.cake_producer
+
+# 或是直接執行測試
+pipenv run python crawler/main.py
 ```
 
 ### 監控任務執行
 
-- **Worker 終端**: 查看任務執行日誌
+- **Worker 終端**: 查看任務執行日誌 docker logs cake_worker_1
 - **Flower 界面**: 查看任務狀態和統計 (http://localhost:5555)
 - **RabbitMQ 管理界面**: 查看隊列狀態 (http://localhost:15672)
+- **MySQL 管理界面**: 查看資料庫狀態 (http://localhost:8080)
 
 ### 任務配置
 
@@ -80,89 +100,12 @@ crawl_cake_jobs.delay(
 )
 ```
 
-## 📊 程式碼架構
+## 程式碼架構
 
-### 配置層 (Configuration Layer)
 - **`cake_config.py`**: 環境變數管理，連接 RabbitMQ 和 MySQL
 - **`local.ini`**: 多環境配置（DEV/DOCKER/PRODUCTION）
 - **`genenv.py`**: 根據環境生成 `.env` 文件
-
-### 任務層 (Task Layer)
 - **`cake_worker.py`**: Celery 應用配置，連接 RabbitMQ
 - **`cake_tasks.py`**: 定義爬蟲任務和測試任務
 - **`cake_producer.py`**: 任務生產者，發送爬蟲任務
-
-### 爬蟲層 (Crawler Layer)
 - **`cake_crawler.py`**: 核心爬蟲邏輯，解析 Cake 網站
-
-## 🔍 故障排除
-
-### 常見問題
-
-1. **RabbitMQ 連接失敗**
-   ```bash
-   # 檢查 RabbitMQ 是否運行
-   docker ps | grep rabbitmq
-   
-   # 檢查端口是否開放
-   netstat -tlnp | grep 5672
-   ```
-
-2. **Worker 無法啟動**
-   ```bash
-   # 檢查依賴是否安裝
-   pipenv install
-   
-   # 檢查配置是否正確
-   pipenv run python -c "from crawler.cake_config import *; print(RABBITMQ_HOST)"
-   ```
-
-3. **任務執行失敗**
-   ```bash
-   # 檢查 Worker 日誌
-   pipenv run celery -A crawler.cake_worker worker --loglevel=debug
-   
-   # 檢查 Flower 監控界面
-   # 訪問 http://localhost:5555
-   ```
-
-## 📄 輸出格式
-
-爬蟲會生成 CSV 文件，包含以下欄位：
-- 職缺
-- 公司
-- 要求技能
-- 公司簡述
-- 地點
-- 薪資
-- 經驗
-
-## 🚀 如何測試 celery 是否正常運行
-
-1. **進入虛擬環境**
-   ```bash
-   pipenv shell
-   ```
-
-2. **啟動 worker**
-   ```bash
-   # 如果已經在虛擬環境 (在本地開發要這樣使用)
-   celery -A crawler.cake_worker worker --loglevel=info
-
-   # 如果不在虛擬環境 (在 docker 中要這樣使用)
-   pipenv run celery -A crawler.cake_worker worker --loglevel=info
-   ```
-
-3. **測試發送任務**
-   ```bash
-   pipenv run python -m crawler.cake_producer
-   ```
-
-
-資料表規劃
-
-company
-locations
-job_type
-job_posts
-job_skills

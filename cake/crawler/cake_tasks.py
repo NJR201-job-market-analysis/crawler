@@ -10,7 +10,6 @@ def crawl_cake_jobs(self, category, job_type):
 
     task_id = self.request.id
     start_time = datetime.now()
-    logger.info("🔍 開始爬取 | 📂 %s | 🏷️ %s", category, job_type)
 
     try:
         result = cake_crawler(category, job_type)

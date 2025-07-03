@@ -2,6 +2,7 @@ import urllib.request as req
 from typing import cast, List
 from bs4 import BeautifulSoup, Tag
 from crawler.cake_logger import logger
+import pandas as pd
 
 BASE_URL = "https://www.cake.me"
 HEADERS = {
@@ -119,7 +120,7 @@ def cake_crawler(category, job_type):
             else base_url
         )
 
-        # print("頁面:", url)
+        print("頁面:", url)
 
         r = req.Request(url)
         r.add_header(
@@ -150,13 +151,14 @@ def cake_crawler(category, job_type):
                 job, "a.CampaignJobSearchItem_companyName__i9OXl"
             )
 
-            job_skill_list = job.find_all("div", {"class": "Tags_item__B6Bjo"})
+            # 這裡的資料不太完整，所以先不使用
+            # job_skill_list = job.find_all("div", {"class": "Tags_item__B6Bjo"})
             # ['Golang', 'Java'] > "Golang,Java,"
             # 1. job_skill = "Golang,"
             # 2. job_skill = "Golang,Java,"
-            job_skill = ""
-            for skill in job_skill_list:
-                job_skill = job_skill + " / " + skill.text
+            # job_skill = ""
+            # for skill in job_skill_list:
+            #     job_skill = job_skill + " / " + skill.text
 
             # job_features 的 index 順序：
             # 0. 全職
@@ -168,28 +170,10 @@ def cake_crawler(category, job_type):
             )
 
             # 工作類型 (全職、兼職、實習)
-            job_work_type = safe_get_text(
-                job_features[0],
-                "div.InlineMessage_label__LJGjW div.CampaignJobSearchItem_featureSegments___NcD4 > div:first-child > button",
-            )
-
-            job_location = safe_get_text(
-                job_features[1],
-                "div.InlineMessage_label__LJGjW div.CampaignJobSearchItem_featureSegments___NcD4 > div:first-child > button",
-            )
-
-            # 如果沒有地點，薪水的 index 要從 2 變成 1
-            job_salary = safe_get_text(
-                job_features[1 if job_location is None else 2],
-                "div.InlineMessage_label__LJGjW",
-            )
-
-            # 如果沒有地點，薪水的 index 要從 3 變成 2
-            job_exp = safe_get_text(
-                job_features[2 if job_location is None else 3],
-                "div.InlineMessage_label__LJGjW",
-            )
-
+            job_work_type = safe_get_job_work_type(job_features)
+            job_location = safe_get_job_location(job_features)
+            job_salary = safe_get_job_salary(job_features)
+            job_exp = safe_get_job_experience(job_features)
             job_url = f"{BASE_URL}{job_title.get('href')}"
             job_detail_html = fetch_job_detail(job_url)
             job_description = extract_job_description(job_detail_html)
@@ -212,11 +196,11 @@ def cake_crawler(category, job_type):
 
         page += 1
 
-    return result
-
     # save to csv
-    # df = pd.json_normalize(table)
-    # df.to_csv(filename + ".csv", encoding="utf-8")
+    df = pd.json_normalize(result)
+    df.to_csv(f"cake_jobs_{category}_{job_type}.csv", encoding="utf-8")
+
+    return result
 
 
 def extract_skills(job_detail_html):
@@ -277,3 +261,45 @@ def safe_get_text(soup, selector, default=""):
         return soup.select_one(selector).text
     except (IndexError, AttributeError):
         return default
+
+
+def safe_get_job_work_type(job_features):
+    try:
+        for feature in job_features:
+            if feature.select_one("div.InlineMessage_icon__2M_1k .fa.fa-user"):
+                return feature.select_one(
+                    "div.CampaignJobSearchItem_featureSegments___NcD4 > div:first-child > button"
+                ).text
+    except (IndexError, AttributeError):
+        return ""
+
+
+def safe_get_job_location(job_features):
+    try:
+        for feature in job_features:
+            if feature.select_one(
+                "div.InlineMessage_icon__2M_1k .fa.fa-map-marker-alt"
+            ):
+                return feature.select_one(
+                    "div.CampaignJobSearchItem_featureSegments___NcD4 span"
+                ).text
+    except (IndexError, AttributeError):
+        return ""
+
+
+def safe_get_job_salary(job_features):
+    try:
+        for feature in job_features:
+            if feature.select_one("div.InlineMessage_icon__2M_1k .fa.fa-dollar-sign"):
+                return feature.select_one("div.InlineMessage_label__LJGjW").text
+    except (IndexError, AttributeError):
+        return ""
+
+
+def safe_get_job_experience(job_features):
+    try:
+        for feature in job_features:
+            if feature.select_one("div.InlineMessage_icon__2M_1k .fa.fa-business-time"):
+                return feature.select_one("div.InlineMessage_label__LJGjW").text
+    except (IndexError, AttributeError):
+        return ""

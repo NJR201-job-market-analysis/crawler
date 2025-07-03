@@ -11,8 +11,8 @@ services:
       - RABBITMQ_DEFAULT_USER=worker
       - RABBITMQ_DEFAULT_PASS=worker
       - RABBITMQ_DEFAULT_VHOST=/
-    # volumes:
-    #   - rabbitmq_data:/var/lib/rabbitmq
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
     networks:
       - cake_network
 
@@ -74,5 +74,5 @@ networks:
     external: true
 
 volumes:
-  # rabbitmq_data:
+  rabbitmq_data:
   mysql:
