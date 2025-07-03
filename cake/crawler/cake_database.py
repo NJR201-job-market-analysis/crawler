@@ -14,15 +14,16 @@ from sqlalchemy import (
 from sqlalchemy.dialects.mysql import (
     insert,
 )  # 專用於 MySQL 的 insert 語法，可支援 on_duplicate_key_update
-
 from crawler.cake_config import MYSQL_ACCOUNT, MYSQL_HOST, MYSQL_PASSWORD, MYSQL_PORT
-
+from crawler.cake_logger import logger
 
 class CakeDatabase:
     def __init__(self):
         self.engine = self.create_database_connection()
         if self.engine is None:
-            raise Exception("無法建立資料庫連接")
+            logger.error("無法建立資料庫連接")
+            return
+
         self.metadata = MetaData()
         self._create_tables()
 
@@ -38,11 +39,11 @@ class CakeDatabase:
             with engine.connect() as conn:
                 conn.execute("SELECT 1")
 
-            print("✅ 資料庫連接成功")
+            # logger.info("✅ 資料庫連接成功")
 
             return engine
         except Exception as e:
-            print(f"❌ 建立資料庫連線失敗: {e}")
+            logger.error("❌ 建立資料庫連線失敗: %s", e)
             return None
 
     def _create_tables(self):
@@ -72,13 +73,13 @@ class CakeDatabase:
 
             # 创建表（如果不存在）
             self.metadata.create_all(self.engine)
-            print("✅ 資料表建立/檢查完成")
+            # logger.info("✅ Cake 資料表建立/檢查完成")
         except Exception as e:
-            print(f"❌ 建立資料表失敗: {e}")
+            logger.error("❌ 建立 Cake 資料表失敗: %s", e)
 
     def insert_jobs(self, jobs):
         if self.engine is None:
-            print("❌ 資料庫連接未初始化")
+            logger.error("❌ Cake 資料庫連接未初始化")
             return False
 
         df = pd.DataFrame(jobs)
@@ -117,24 +118,24 @@ class CakeDatabase:
                     # 判斷是插入還是更新
                     if result.rowcount == 1:
                         insert_count += 1
-                        print(f"✅ 新增職位: {job_data.get('job_title', 'Unknown')}")
+                        # print(f"✅ 新增職位: {job_data.get('job_title', 'Unknown')}")
                     else:
                         update_count += 1
-                        print(f"🔄 更新職位: {job_data.get('job_title', 'Unknown')}")
+                        # print(f"🔄 更新職位: {job_data.get('job_title', 'Unknown')}")
 
                 success_count += 1
 
             except Exception as e:
-                print(f"❌ 處理職位資料失敗: {e}")
-                print(f"   職位標題: {row.get('job_title', 'Unknown')}")
-                print(f"   job_url: {row.get('job_url', 'Unknown')}")
+                logger.error("❌ 處理職位資料失敗: %s", e)
+                logger.error("   職位標題: %s", row.get("job_title", "Unknown"))
+                logger.error("   job_url: %s", row.get("job_url", "Unknown"))
                 continue
 
-        print(f"✅ 批量處理完成:")
-        print(f"   總計: {len(df)} 筆")
-        print(f"   成功: {success_count} 筆")
-        print(f"   新增: {insert_count} 筆")
-        print(f"   更新: {update_count} 筆")
-        print(f"   失敗: {len(df) - success_count} 筆")
+        logger.info("✅ 寫入 Cake 資料庫完成:")
+        logger.info("   總計: %s 筆", len(df))
+        logger.info("   成功: %s 筆", success_count)
+        logger.info("   新增: %s 筆", insert_count)
+        logger.info("   更新: %s 筆", update_count)
+        logger.info("   失敗: %s 筆", len(df) - success_count)
 
         return success_count

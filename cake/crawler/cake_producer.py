@@ -14,15 +14,16 @@ categories = [
     # 可以繼續添加更多分類
 ]
 
+logger.info("🚀 開始發送 %s 個爬蟲任務", len(categories))
+
 tasks = []
 
 # 為每個分類創建一個任務
 for category, job_type in categories:
-    logger.info(f"🚀 開始發送 {len(categories)} 個爬蟲任務")
 
     task = crawl_cake_jobs.delay(category=category, job_type=job_type)
 
     tasks.append(task)
-    logger.info(f"📤 已發送任務: {category} | {job_type} | ID: {task.id}")
+    logger.info("📤 已發送任務: %s | %s | ID: %s", category, job_type, task.id)
 
-logger.info(f"✅ 所有任務已發送完成，共 {len(tasks)} 個任務")
+logger.info("✅ 所有任務已發送完成，共 %s 個任務", len(tasks))

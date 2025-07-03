@@ -105,7 +105,7 @@ def cake_crawler(category, job_type):
     result = []
     page = 1
 
-    logger.info(f"🐛 開始爬取 | {category} | {job_type}")
+    logger.info("🐛 開始爬取 | %s | %s", category, job_type)
 
     while page <= 1:
         # if job_type is None then https://www.cake.me/campaigns/software-developer/jobs?page=1
@@ -130,7 +130,7 @@ def cake_crawler(category, job_type):
         try:
             res = req.urlopen(r)
         except Exception as e:
-            logger.error(f"請求 {url} 失敗 | {e}")
+            logger.error("請求 %s 失敗 | %s", url, e)
             break
 
         soup = BeautifulSoup(res.read(), features="html.parser")
@@ -234,7 +234,7 @@ def extract_skills(job_detail_html):
                         found_skills.add(skill)
         return ",".join(sorted(found_skills)) if found_skills else ""
     except Exception as e:
-        logger.error(f"Failed to parse skills: {e}")
+        logger.error("Failed to parse skills: %s", e)
         return ""
 
 
@@ -254,7 +254,7 @@ def extract_job_description(job_detail_html):
 
         return " ".join(all_text)
     except Exception as e:
-        logger.error(f"Failed to parse job description: {e}")
+        logger.error("Failed to parse job description: %s", e)
         return ""
 
 
@@ -268,7 +268,7 @@ def fetch_job_detail(job_url):
         res = req.urlopen(r)
         return res.read()
     except Exception as e:
-        logger.error(f"請求 {job_url} 失敗 | {e}")
+        logger.error("請求 %s 失敗 | %s", job_url, e)
         return ""
 
 
